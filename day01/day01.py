@@ -1,35 +1,30 @@
 def process_input(lines):
-    # Convert each line into pairs of numbers
-    number_pairs = []
-    for line in lines:
-        # Split the line and convert to integers
-        first, second = map(int, line.strip().split())
-        number_pairs.append((first, second))
+    # Use list comprehension for initial parsing - more efficient than loop
+    number_pairs = [tuple(map(int, line.strip().split())) for line in lines]
     
-    # At this point number_pairs is a list of tuples like [(n1, n2), (n1, n2), ...]
-    # You can access columns like this:
-    first_column = [pair[0] for pair in number_pairs]
-    second_column = [pair[1] for pair in number_pairs]
+    # Use zip for more efficient column extraction
+    first_column, second_column = zip(*number_pairs)
+    
+    # Convert to lists since we need mutability for sorting
+    first_column = list(first_column)
+    second_column = list(second_column)
     
     first_column.sort()
     second_column.sort()
 
-    #print(first_column)
-    #print(second_column)
+    # Use sum with generator expression instead of creating intermediate list
+    differences = sum(abs(a - b) for a, b in zip(first_column, second_column))
 
-    differences = []
-    for i in range(len(first_column)):
-        diff = abs(first_column[i] - second_column[i])
-        differences.append(diff)
+    # Use Counter for more efficient counting
+    from collections import Counter
+    first_counts = Counter(first_column)
+    second_counts = Counter(second_column)
 
-    occurrences = {num: (first_column.count(num), second_column.count(num)) for num in first_column}
-    # print(occurrences)
+    # Calculate similarity more efficiently
+    similarity = sum(num * count * second_counts[num] 
+                    for num, count in first_counts.items())
 
-    similarity = 0
-    for key, value in occurrences.items():
-        similarity += key * value[0] * value[1]
-
-    return sum(differences), similarity
+    return differences, similarity
 
 def main():
     with open('input.txt', 'r') as file:
