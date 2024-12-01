@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment (if you're using one)
+venv/
+env/
+.env/
+
+# IDE specific files (common ones)
+.vscode/
+.idea/
+*.swp
+.DS_Store
