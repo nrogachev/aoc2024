@@ -4,16 +4,17 @@ def process_input(lines):
     safe_reports = []
     unsafe_reports = []
     for report in reports:
-        if check_report_safe(report) == True:
+        if check_report_safe(report):
             safe_reports.append(report)
         else:
             unsafe_reports.append(report)
     # print(safe_reports)
     # print(unsafe_reports)
     unsafe_reports_with_tolerance = []
-    for report in unsafe_reports:
-        if check_report_with_tolerance(report) == True:
-            unsafe_reports_with_tolerance.append(report)
+    # for report in unsafe_reports:
+    #     if check_report_with_tolerance(report):
+    #         unsafe_reports_with_tolerance.append(report).
+    unsafe_reports_with_tolerance = [report for report in unsafe_reports if check_report_with_tolerance(report)]
     return len(safe_reports), len(safe_reports)+len(unsafe_reports_with_tolerance)
 
 def check_report_safe(report):
