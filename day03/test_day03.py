@@ -1,15 +1,12 @@
+from pathlib import Path
 import unittest
 from day03 import process_input
-import os
 
 class TestDay03(unittest.TestCase):
     def test_with_example_input(self):
-        # Get the directory of the current script
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        test_file_path = os.path.join(current_dir, 'test2.txt')
+        file_path = Path(__file__).parent / 'test2.txt'
         
-        # Read the test input file
-        with open(test_file_path, 'r') as file:
+        with open(file_path) as file:
             lines = file.readlines()
         
         result = process_input(lines)

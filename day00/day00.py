@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 def process_input(lines):
     print(lines)
@@ -7,10 +7,9 @@ def process_input(lines):
     return part1, part2
 
 def main():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, 'input.txt')
-        
-    with open(file_path, 'r') as file:
+    file_path = Path(__file__).parent / 'input.txt'
+    
+    with open(file_path) as file:
         lines = file.readlines()
     result = process_input(lines)
     print(result)
