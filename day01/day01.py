@@ -1,3 +1,6 @@
+import os
+from collections import Counter
+
 def process_input(lines):
     # Use list comprehension for initial parsing - more efficient than loop
     number_pairs = [tuple(map(int, line.strip().split())) for line in lines]
@@ -27,11 +30,14 @@ def process_input(lines):
     return differences, similarity
 
 def main():
-    with open('input.txt', 'r') as file:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, 'input.txt')
+        
+    with open(file_path, 'r') as file:  
         lines = file.readlines()
     result = process_input(lines)
     print(result)
-    return result  # Return value for testing
+    return result 
 
 if __name__ == "__main__":
     main()

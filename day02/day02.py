@@ -1,3 +1,5 @@
+import os
+
 def process_input(lines):
     reports = [[int(num) for num in line.strip().split()] for line in lines]
     # print(reports)
@@ -38,7 +40,10 @@ def check_report_with_tolerance(report):
     return False
 
 def main():
-    with open('input.txt', 'r') as file:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, 'input.txt')
+        
+    with open(file_path, 'r') as file:
         lines = file.readlines()
     result = process_input(lines)
     print(result)
