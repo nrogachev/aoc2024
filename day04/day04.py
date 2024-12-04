@@ -1,50 +1,47 @@
 from pathlib import Path
 
 def process_input(lines):
-    # print(lines)
-    part1 = 0
-    part2 = 0
-
     grid = [list(line.strip()) for line in lines]
-    # print(grid)
+    rows, cols = len(grid), len(grid[0])
+    part1 = part2 = 0
 
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            # print(i, j)
-            # part 1
+    # Directions for part1 (y, x)
+    directions = [
+        [(-1, 0), (-2, 0), (-3, 0)],  # up
+        [(1, 0), (2, 0), (3, 0)],     # down
+        [(0, -1), (0, -2), (0, -3)],  # left
+        [(0, 1), (0, 2), (0, 3)],     # right
+        [(-1, -1), (-2, -2), (-3, -3)],  # diagonal up-left
+        [(-1, 1), (-2, 2), (-3, 3)],     # diagonal up-right
+        [(1, -1), (2, -2), (3, -3)],     # diagonal down-left
+        [(1, 1), (2, 2), (3, 3)]         # diagonal down-right
+    ]
+
+    for i in range(rows):
+        for j in range(cols):
+            # Part 1
             if grid[i][j] == 'X':
-                # check upwards
-                if i >= 3 and grid[i-1][j] == 'M' and grid[i-2][j] == 'A' and grid[i-3][j] == 'S':  
-                    part1 += 1
-                # check downwards
-                if i <= len(grid) - 4 and grid[i+1][j] == 'M' and grid[i+2][j] == 'A' and grid[i+3][j] == 'S':
-                    part1 += 1
-                # check left    
-                if j >= 3 and grid[i][j-1] == 'M' and grid[i][j-2] == 'A' and grid[i][j-3] == 'S':
-                    part1 += 1
-                # check right
-                if j <= len(grid[i]) - 4 and grid[i][j+1] == 'M' and grid[i][j+2] == 'A' and grid[i][j+3] == 'S':
-                    part1 += 1
-                # check diagonal upwards left
-                if i >= 3 and j >= 3 and grid[i-1][j-1] == 'M' and grid[i-2][j-2] == 'A' and grid[i-3][j-3] == 'S':
-                    part1 += 1  
-                # check diagonal upwards right
-                if i >= 3 and j <= len(grid[i]) - 4 and grid[i-1][j+1] == 'M' and grid[i-2][j+2] == 'A' and grid[i-3][j+3] == 'S':
-                    part1 += 1      
-                # check diagonal downwards left
-                if i <= len(grid) - 4 and j >= 3 and grid[i+1][j-1] == 'M' and grid[i+2][j-2] == 'A' and grid[i+3][j-3] == 'S':
-                    part1 += 1
-                # check diagonal downwards right
-                if i <= len(grid) - 4 and j <= len(grid[i]) - 4 and grid[i+1][j+1] == 'M' and grid[i+2][j+2] == 'A' and grid[i+3][j+3] == 'S':
-                    part1 += 1
-            # part 2
-            if i >=1 and i <= len(grid)-2 and j >=1 and j <= len(grid[i])-2 and grid[i][j] == 'A':
-                diagonal_1 = grid[i-1][j-1] + grid[i][j] + grid[i+1][j+1]
-                diagonal_2 = grid[i-1][j+1] + grid[i][j] + grid[i+1][j-1]
-                if diagonal_1 == 'MAS' or diagonal_1 == 'SAM':
-                    if diagonal_2 == 'MAS' or diagonal_2 == 'SAM':
-                        part2 += 1
-                
+                for direction in directions:
+                    valid = True
+                    word = 'X'
+                    for dy, dx in direction:
+                        new_i, new_j = i + dy, j + dx
+                        if not (0 <= new_i < rows and 0 <= new_j < cols):
+                            valid = False
+                            break
+                        word += grid[new_i][new_j]
+                    if valid and word == 'XMAS':
+                        part1 += 1
+
+            # Part 2
+            if (0 < i < rows-1 and 0 < j < cols-1 and 
+                grid[i][j] == 'A'):
+                diag1 = grid[i-1][j-1] + grid[i][j] + grid[i+1][j+1]
+                diag2 = grid[i-1][j+1] + grid[i][j] + grid[i+1][j-1]
+                if (diag1 in ('MAS', 'SAM') and 
+                    diag2 in ('MAS', 'SAM')):
+                    part2 += 1
+
     return part1, part2
 
 def main():
