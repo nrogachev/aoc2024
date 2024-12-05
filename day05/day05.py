@@ -1,19 +1,23 @@
 from pathlib import Path
 
 def swap(update, rule):
-    update[rule[1]], update[rule[0]] = update[rule[0]], update[rule[1]]
+    update[0][rule[1]], update[0][rule[0]] = update[0][rule[0]], update[0][rule[1]]
+    update[1][update[0][rule[1]]], update[1][update[0][rule[0]]] = update[1][update[0][rule[0]]], update[1][update[0][rule[1]]]
     return update
+
+def check_rule(update, rule):
+    return rule[0] in update[0] and rule[1] in update[0] and update[0][rule[0]] > update[0][rule[1]]
 
 def is_ordered(update, rules):
     for rule in rules:
-        if rule[0] in update and rule[1] in update and update[rule[0]] > update[rule[1]]:
+        if check_rule(update, rule):
             return False
     return True
 
 def check_and_swap(update, rules):
     swapped = False
     for rule in rules:
-        if rule[0] in update and rule[1] in update and update[rule[0]] > update[rule[1]]:
+        if check_rule(update, rule):
             swap(update, rule)
             swapped = True
     return update, swapped
@@ -22,42 +26,36 @@ def process_input(lines):
     # print(lines)
     rules = []
     updates = []
-    split = False
-    for line in lines:
-        if line == '\n':
-            split = True
+
+    split_idx = lines.index('\n')
+
+    rules = [tuple(map(int, line.strip().split('|'))) 
+             for line in lines[:split_idx]]
+    
+    for line in lines[split_idx + 1:]:
+        if not line.strip():
             continue
-        if split:
-            index_map = {num: idx for idx, num in enumerate(list(map(int, line.strip().split(','))))}
-            updates.append(index_map)
-        else:
-            n1, n2 = map(int, line.strip().split('|'))
-            rules.append((n1, n2))
+        numbers = list(map(int, line.strip().split(',')))
+        index_map = {num: idx for idx, num in enumerate(numbers)}
+        reverse_map = {idx: num for num, idx in index_map.items()}
+        updates.append((index_map, reverse_map))
+
     # print(rules)    
     # print(updates)
 
-    ordered_updates = []
-    unordered_updates = []
+    ordered = []
+    unordered = []
     for update in updates:
-        if is_ordered(update, rules):
-            ordered_updates.append(update)
-        else:
-            unordered_updates.append(update)
+        (ordered if is_ordered(update, rules) else unordered).append(update)
 
-    part1 = 0
-    for update in ordered_updates:
-        for k,v in update.items():
-            if v == len(update) // 2:
-                part1 += k
+    part1 = sum(update[1][len(update[1]) // 2] for update in ordered)
 
     part2 = 0
-    for update in unordered_updates:
+    for update in unordered:
         swapped = True
         while swapped:
             update, swapped = check_and_swap(update, rules)
-        for k,v in update.items():
-            if v == len(update) // 2:
-                part2 += k
+        part2 += update[1][len(update[1]) // 2]
 
     return part1, part2
 
