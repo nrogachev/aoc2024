@@ -10,7 +10,7 @@ class TestDay06(unittest.TestCase):
             lines = file.readlines()
         
         result = process_input(lines)
-        expected = 0, 0  # whatever your expected result is
+        expected = 41, 6  # whatever your expected result is
         self.assertEqual(result, expected)
 
 if __name__ == '__main__':
