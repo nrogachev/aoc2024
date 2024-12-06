@@ -67,11 +67,11 @@ def process_input(lines):
             dir = rotation_order[(rotation_order.index(dir) + 1) % 4]
             continue
         else:   
-            # obstacle check
+            # obstacle check - add new wall on the way and see if walking changed map creates a loop
             if next_move not in obstacles and next_move != start:
                 new_map = [row[:] for row in map]
                 new_map[next_move[0]][next_move[1]] = '#'
-                visited, loop_found = walk_map(new_map, start, directions, rotation_order)
+                _, loop_found = walk_map(new_map, start, directions, rotation_order)
                 if loop_found:
                     obstacles.add(next_move)
             pos = next_move       
