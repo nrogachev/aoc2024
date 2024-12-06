@@ -1,5 +1,30 @@
 from pathlib import Path
 
+def walk_map(map, start, directions, rotation_order):
+    rows, cols = len(map), len(map[0])
+    pos = start
+    dir = map[start[0]][start[1]]
+    visited = set([start])
+    visited_with_dir = set([(start, dir)])
+    loop_found = False
+    while True:
+        next_move = (pos[0] + directions[dir][0], pos[1] + directions[dir][1])
+        if not (0 <= next_move[0] < rows and 0 <= next_move[1] < cols):
+            # out of bounds
+            break
+        if map[next_move[0]][next_move[1]] == '#':
+            # hit a wall, turn right
+            dir = rotation_order[(rotation_order.index(dir) + 1) % 4]
+            continue
+        else:   
+            if (next_move, dir) in visited_with_dir:
+                loop_found = True
+                break
+            pos = next_move
+            visited.add(pos)
+            visited_with_dir.add((pos, dir))
+    return visited, loop_found
+
 def process_input(lines):
     # print(lines)s
     map = [list(line.strip()) for line in lines]
@@ -22,11 +47,18 @@ def process_input(lines):
     rotation_order = ['^', '>', 'v', '<']
     # print(directions[map[start[0]][start[1]]])
 
+    visited, loop_found = walk_map(map, start, directions, rotation_order)
+    # for row in range(rows):
+    #     print(''.join(map[row]))
+    part1 = len(visited)
+    # print(loop_found)
+
     pos = start
     dir = map[start[0]][start[1]]
-    visited = set([start])
+    obstacles = set()
     while True:
         next_move = (pos[0] + directions[dir][0], pos[1] + directions[dir][1])
+        # print(next_move)
         if not (0 <= next_move[0] < rows and 0 <= next_move[1] < cols):
             break
         if map[next_move[0]][next_move[1]] == '#':
@@ -34,39 +66,16 @@ def process_input(lines):
             dir = rotation_order[(rotation_order.index(dir) + 1) % 4]
             continue
         else:   
-            pos = next_move
-            visited.add(pos)
-    # for row in range(rows):
-    #     print(''.join(map[row]))
-    part1 = len(visited)
-
-    pos = start
-    dir = map[start[0]][start[1]]
-    obstacles = set()
-    visited_with_dir = set([(start, dir)])
-    while True:
-        next_move = (pos[0] + directions[dir][0], pos[1] + directions[dir][1])
-        if not (0 <= next_move[0] < rows and 0 <= next_move[1] < cols):
-            break
-        o_dir = rotation_order[(rotation_order.index(dir) + 1) % 4]
-        if map[next_move[0]][next_move[1]] == '#':
-            # hit a wall, turn right
-            dir = o_dir
-            continue
-        else:   
             # obstacle check
-            o_next_move = (pos[0] + directions[o_dir][0], pos[1] + directions[o_dir][1])
-            while map[o_next_move[0]][o_next_move[1]] != '#':
-                if (o_next_move, o_dir) in visited_with_dir:
+            if next_move != start:
+                new_map = [row[:] for row in map]
+                new_map[next_move[0]][next_move[1]] = '#'
+                visited, loop_found = walk_map(new_map, start, directions, rotation_order)
+                if loop_found:
                     obstacles.add(next_move)
-                    break
-                o_next_move = (o_next_move[0] + directions[o_dir][0], o_next_move[1] + directions[o_dir][1])
-                if not (0 <= o_next_move[0] < rows and 0 <= o_next_move[1] < cols):
-                    break
-            pos = next_move
-            visited_with_dir.add((pos, dir))
+            pos = next_move       
 
-    print(obstacles)
+    # print(obstacles)
     part2 = len(obstacles)
     return part1, part2
 
