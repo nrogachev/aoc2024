@@ -1,4 +1,5 @@
 from pathlib import Path
+from timeit import default_timer as timer
 
 def walk_map(map, start, directions, rotation_order):
     rows, cols = len(map), len(map[0])
@@ -67,7 +68,7 @@ def process_input(lines):
             continue
         else:   
             # obstacle check
-            if next_move != start:
+            if next_move not in obstacles and next_move != start:
                 new_map = [row[:] for row in map]
                 new_map[next_move[0]][next_move[1]] = '#'
                 visited, loop_found = walk_map(new_map, start, directions, rotation_order)
@@ -80,12 +81,16 @@ def process_input(lines):
     return part1, part2
 
 def main():
-    file_path = Path(__file__).parent / 'input.txt'
+    start = timer()
     
+    file_path = Path(__file__).parent / 'input.txt'
     with open(file_path) as file:
         lines = file.readlines()
     result = process_input(lines)
-    print(result)
+    
+    end = timer()
+    print(f"Result: {result}")
+    print(f"Execution time: {end - start:.3f} seconds")
     return result
 
 if __name__ == "__main__":
