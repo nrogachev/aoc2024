@@ -47,13 +47,16 @@ def process_input(lines):
     }
     rotation_order = ['^', '>', 'v', '<']
     # print(directions[map[start[0]][start[1]]])
-
+    start_time = timer()
     visited, loop_found = walk_map(map, start, directions, rotation_order)
+    end_time = timer()
+    print(f"Execution time Part 1: {end_time - start_time:.3f} seconds")
     # for row in range(rows):
     #     print(''.join(map[row]))
     part1 = len(visited)
     # print(loop_found)
 
+    start_time = timer()
     pos = start
     dir = map[start[0]][start[1]]
     obstacles = set()
@@ -77,20 +80,22 @@ def process_input(lines):
             pos = next_move       
 
     # print(obstacles)
+    end_time = timer()
+    print(f"Execution time Part 2: {end_time - start_time:.3f} seconds")
     part2 = len(obstacles)
     return part1, part2
 
 def main():
-    start = timer()
+    start_time = timer()
     
     file_path = Path(__file__).parent / 'input.txt'
     with open(file_path) as file:
         lines = file.readlines()
     result = process_input(lines)
     
-    end = timer()
+    end_time = timer()
+    print(f"Execution time Total: {end_time - start_time:.3f} seconds")
     print(f"Result: {result}")
-    print(f"Execution time: {end - start:.3f} seconds")
     return result
 
 if __name__ == "__main__":
