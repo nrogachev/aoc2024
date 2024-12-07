@@ -2,22 +2,24 @@ from pathlib import Path
 from time import perf_counter as timer
 import math
 
-def check(collected, numbers, target):
+def check(collected, numbers, target, with_concat=False):
     n1 = collected + numbers[0]
     n2 = collected * numbers[0]
+    if with_concat:
+        n3 = int(str(collected) + str(numbers[0]))
     if len(numbers) == 1:
-        if n1 == target or n2 == target:
+        if n1 == target or n2 == target or (with_concat and n3 == target):
             return True
         else:
             return False
-    if n1 > target and n2 > target:
+    if n1 > target and n2 > target and (with_concat and n3 > target):
         return False
-    elif n1 < target and n2 > target:
+    elif n1 < target and n2 > target and not with_concat:
         return check(n1, numbers[1:], target)
-    elif n1 > target and n2 < target:
+    elif n1 > target and n2 < target and not with_concat:
         return check(n2, numbers[1:], target)
     else:
-        return check(n1, numbers[1:], target) or check(n2, numbers[1:], target)
+        return check(n1, numbers[1:], target, with_concat) or check(n2, numbers[1:], target, with_concat) or (with_concat and check(n3, numbers[1:], target, with_concat))
 
 def process_input(lines):
     # print(lines)
@@ -34,12 +36,17 @@ def process_input(lines):
         numbers = equation[1]
         if check(numbers[0], numbers[1:], equation[0]):
             part1 += equation[0]
-
     end_time = timer()  
     print(f"Execution time Part 1: {end_time - start_time:.3f} seconds")
 
     start_time = timer()    
     part2 = 0
+    for equation in equations:
+        # print(equation)
+        numbers = equation[1]
+        if check(numbers[0], numbers[1:], equation[0], True):
+            # print(equation)
+            part2 += equation[0]    
     end_time = timer()  
     print(f"Execution time Part 2: {end_time - start_time:.3f} seconds")
 
