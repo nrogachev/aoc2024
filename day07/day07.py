@@ -7,29 +7,19 @@ def check(collected, numbers, target, with_concat=False):
     n2 = collected * numbers[0]
     if with_concat:
         n3 = int(str(collected) + str(numbers[0]))
-    if len(numbers) == 1:
-        if n1 == target or n2 == target or (with_concat and n3 == target):
-            return True
-        else:
-            return False
-    if n1 > target and n2 > target:
-        if with_concat and n3 < target:
-            return check(n3, numbers[1:], target, with_concat)
-        else:
-            return False
-    elif n1 < target and n2 > target:
-        if with_concat and n3 < target:
-            return check(n1, numbers[1:], target, with_concat) or check(n3, numbers[1:], target, with_concat)
-        else:
-            return check(n1, numbers[1:], target, with_concat)
-    elif n1 > target and n2 < target:
-        if with_concat and n3 < target:
-            return check(n2, numbers[1:], target, with_concat) or check(n3, numbers[1:], target, with_concat)
-        else:
-            return check(n2, numbers[1:], target, with_concat)
-    else:
-        return check(n1, numbers[1:], target, with_concat) or check(n2, numbers[1:], target, with_concat) or (with_concat and check(n3, numbers[1:], target, with_concat))
 
+    if len(numbers) == 1:
+        return n1 == target or n2 == target or (with_concat and n3 == target)
+
+    result = False
+    if n1 <= target:
+        result = result or check(n1, numbers[1:], target, with_concat)
+    if n2 <= target:
+        result = result or check(n2, numbers[1:], target, with_concat)
+    if with_concat and n3 <= target:
+        result = result or check(n3, numbers[1:], target, with_concat)
+    return result
+    
 def process_input(lines):
     # print(lines)
     equations = []
