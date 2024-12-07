@@ -21,10 +21,14 @@ def check(collected, numbers, target, with_concat=False):
     
 def process_input(lines):
     # print(lines)
-    equations = []
-    for line in lines:
-        parts = line.split(':') 
-        equations.append((int(parts[0]), list(map(int, parts[1].strip().split()))))
+    equations = [
+        (int(parts[0]), list(map(int, parts[1].strip().split())))
+        for line in lines
+        if (parts := line.split(':'))
+    ]
+    # for line in lines:
+    #     parts = line.split(':') 
+    #     equations.append((int(parts[0]), list(map(int, parts[1].strip().split()))))
     # print(equations)
 
     start_time = timer()    
