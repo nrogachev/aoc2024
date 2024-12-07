@@ -15,7 +15,7 @@ def main():
     result = process_input(lines)
     end_time = timer()
     print(f"Execution time Total: {end_time - start_time:.3f} seconds")
-    print(result)
+    print(f"Result: {result}")
     return result
 
 if __name__ == "__main__":
