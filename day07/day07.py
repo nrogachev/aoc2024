@@ -12,12 +12,21 @@ def check(collected, numbers, target, with_concat=False):
             return True
         else:
             return False
-    if n1 > target and n2 > target and (with_concat and n3 > target):
-        return False
-    elif n1 < target and n2 > target and not with_concat:
-        return check(n1, numbers[1:], target)
-    elif n1 > target and n2 < target and not with_concat:
-        return check(n2, numbers[1:], target)
+    if n1 > target and n2 > target:
+        if with_concat and n3 < target:
+            return check(n3, numbers[1:], target, with_concat)
+        else:
+            return False
+    elif n1 < target and n2 > target:
+        if with_concat and n3 < target:
+            return check(n1, numbers[1:], target, with_concat) or check(n3, numbers[1:], target, with_concat)
+        else:
+            return check(n1, numbers[1:], target, with_concat)
+    elif n1 > target and n2 < target:
+        if with_concat and n3 < target:
+            return check(n2, numbers[1:], target, with_concat) or check(n3, numbers[1:], target, with_concat)
+        else:
+            return check(n2, numbers[1:], target, with_concat)
     else:
         return check(n1, numbers[1:], target, with_concat) or check(n2, numbers[1:], target, with_concat) or (with_concat and check(n3, numbers[1:], target, with_concat))
 
