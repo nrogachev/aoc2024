@@ -1,6 +1,5 @@
 from pathlib import Path
 from time import perf_counter as timer
-import math
 
 def check(collected, numbers, target, with_concat=False):
     n1 = collected + numbers[0]
@@ -12,12 +11,12 @@ def check(collected, numbers, target, with_concat=False):
         return n1 == target or n2 == target or (with_concat and n3 == target)
 
     result = False
-    if n1 <= target:
-        result = result or check(n1, numbers[1:], target, with_concat)
-    if n2 <= target:
-        result = result or check(n2, numbers[1:], target, with_concat)
-    if with_concat and n3 <= target:
+    if with_concat and n3 <= target and not result:
         result = result or check(n3, numbers[1:], target, with_concat)
+    if n2 <= target and not result:
+        result = result or check(n2, numbers[1:], target, with_concat)
+    if n1 <= target and not result:
+        result = result or check(n1, numbers[1:], target, with_concat)
     return result
     
 def process_input(lines):
